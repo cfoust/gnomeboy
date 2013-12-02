@@ -1,4 +1,4 @@
-local self = GnomeBoyAdvance
+local self = GnomeBoy
 local gem = GBAgem
 function GBALoadROM( curfile, filetype )
 	self.Emulator = gem.New( curfile, filetype )
