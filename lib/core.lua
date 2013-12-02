@@ -10,10 +10,14 @@ gem.GBZ80 = {}
 -- Name: New
 -- Desc: Creates a new instance of the emulator
 ----------------------------------------------------------------------
-function gem.New(ROMstring, emulatortype )
-	--print("Received ", string.sub(ROMstring,1,5),emulatortype)
+function gem.New(ROMName, emulatortype )
+
 	local new = setmetatable({}, gem.mt)
-	new.ROMstring = ROMstring
+
+	new.ROMtable = GB_GET_ROM(ROMName)
+	if (new.ROMtable == nil) then
+		print("Rom not found: " + ROMName)
+	end
 	new.emulatortype = emulatortype
 	
 	if emulatortype == "GBZ80" then

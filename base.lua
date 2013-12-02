@@ -3,24 +3,33 @@ print("GnomeBoyAdvance Alpha loaded")
 
 local function _wd() return "Interface\\AddOns\\GnomeBoyAdvance\\" end
 
+function GB_GET_ROM(string)
+  for i,j in pairs(GB_ROMS) do
+    if j['name'] == string then
+      return j;
+    end
+  end
+  return nil;
+end
+
 local function GenerateTV()
   local self = CreateFrame("Frame","GnomeBoy",UIParent)
 
 
   do
-    self:EnableMouse(true)
-    self:RegisterForDrag("LeftButton")
-    self:SetMovable(true)
-    self:SetClampedToScreen(true)
-    self:SetScript("OnDragStart",function(self) self:StartMoving() end)
-    self:SetScript("OnDragStop",function(self) self:StopMovingOrSizing() end)
+    -- self:EnableMouse(true)
+    -- self:RegisterForDrag("LeftButton")
+    -- self:SetMovable(true)
+    -- self:SetClampedToScreen(true)
+    -- self:SetScript("OnDragStart",function(self) self:StartMoving() end)
+    -- self:SetScript("OnDragStop",function(self) self:StopMovingOrSizing() end)
     self:SetFrameLevel(6)
   end
 
 
 
   function self:setUp(self,size)
-    self:SetSize(size,(254/302)*size)
+    self:SetSize(size,(144/160)*size)
   end
   function self:Resolute(size)
     self:setUp(self,size)
@@ -30,8 +39,8 @@ local function GenerateTV()
     self.minus:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",(70/1000)*self:GetWidth(),-1*(226/842)*self:GetHeight())
     self.close:SetPoint("TOPLEFT",self,"TOPLEFT",(31/1000)*self:GetWidth(),-1*(588/842)*self:GetHeight())
     self.close:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",(70/1000)*self:GetWidth(),-1*(627/842)*self:GetHeight())
-    self.Screen:SetPoint("TOPLEFT",self,"TOPLEFT",math.floor((46/512)*self:GetWidth()),-1*math.floor((46/431)*self:GetHeight()))
-    self.Screen:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-1*math.floor((53/512)*self:GetWidth()),math.floor((105/431)*self:GetHeight()))
+    -- self.Screen:SetPoint("TOPLEFT",self,"TOPLEFT",math.floor((46/512)*self:GetWidth()),-1*math.floor((46/431)*self:GetHeight()))
+    -- self.Screen:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-1*math.floor((53/512)*self:GetWidth()),math.floor((105/431)*self:GetHeight()))
   end
   function self:SetSizeDelta(delta)
     if ((self:GetWidth()+delta) > 220) and ((self:GetWidth()+delta) < 700) then self:Resolute(self:GetWidth()+delta) end
@@ -40,60 +49,6 @@ local function GenerateTV()
 
   self:SetPoint("CENTER",UIParent,"CENTER")
   self:Show()
-
-  self.art = CreateFrame("Frame",nil,self)
-  self.art:SetAllPoints(self)
-  do
-    self.bg = self.art:CreateTexture(nil,"OVERLAY",nil,5)
-    self.bg:SetTexture(_wd() .. "Textures\\TV\\tv.tga")
-    self.bg:SetTexCoord(0,1,0,431/512)
-    self.bg:SetAllPoints(self.art)
-    self.bg:Show()
-  end
-  do--Initializes buttons
-    do
-      self.plus = CreateFrame("Button",nil,self.art)
-      self.plus:SetPoint("TOPLEFT",self,"TOPLEFT",(31/1000)*self:GetWidth(),-1*(144/842)*self:GetHeight())
-      self.plus:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",(70/1000)*self:GetWidth(),-1*(183/842)*self:GetHeight())
-      self.plus.bg = self.plus:CreateTexture(nil,"OVERLAY",nil,6);
-      self.plus.bg:SetAllPoints(self.plus)
-      self.plus.bg:SetTexture(_wd() .. "Textures\\TV\\plus.tga")
-      self.plus:EnableMouse(true)
-      self.plus:RegisterForClicks("LeftButtonUp")
-      self.plus:SetScript("OnClick",function(frame,button,down)
-        self:SetSizeDelta(30);
-      end)
-    end
-    do
-      self.minus = CreateFrame("Button",nil,self.art)
-      self.minus:SetPoint("TOPLEFT",self,"TOPLEFT",(31/1000)*self:GetWidth(),-1*(187/842)*self:GetHeight())
-      self.minus:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",(70/1000)*self:GetWidth(),-1*(226/842)*self:GetHeight())
-      self.minus.bg = self.minus:CreateTexture(nil,"OVERLAY",nil,6);
-      self.minus.bg:SetAllPoints(self.minus)
-      self.minus.bg:SetTexture(_wd() .. "Textures\\TV\\minus.tga")
-      self.minus:EnableMouse(true)
-      self.minus:RegisterForClicks("LeftButtonUp")
-      self.minus:SetScript("OnClick",function(frame,button,down)
-        self:SetSizeDelta(-30);
-      end)
-    end
-    do
-      self.close = CreateFrame("Button",nil,self.art)
-      self.close:SetPoint("TOPLEFT",self,"TOPLEFT",(31/1000)*self:GetWidth(),-1*(588/842)*self:GetHeight())
-      self.close:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",(70/1000)*self:GetWidth(),-1*(627/842)*self:GetHeight())
-      self.close.bg = self.close:CreateTexture(nil,"OVERLAY",nil,6);
-      self.close.bg:SetAllPoints(self.close)
-      self.close.bg:SetTexture(_wd() .. "Textures\\TV\\close.tga")
-      self.close:EnableMouse(true)
-      self.close:RegisterForClicks("LeftButtonUp")
-      self.close:SetScript("OnClick",function(frame,button,down)
-        self:Hide()
-      end)
-    end
-  end
-  do
-    self.art:SetClampedToScreen(true)
-  end
 
   self.Screen = CreateFrame("Frame",nil,self)
   self.Screen:SetFrameLevel(5)

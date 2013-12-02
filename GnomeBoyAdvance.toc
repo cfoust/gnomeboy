@@ -10,5 +10,5 @@ lib\gmb_memory.lua
 lib\gmb_opcodes.lua
 lib\gmb_cb_opcodes.lua
 lib\gmb_gpu.lua
-rom_hex.lua
+roms.lua
 post.lua

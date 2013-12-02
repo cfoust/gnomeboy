@@ -340,9 +340,11 @@ local string_sub = string.sub
 
 function mt:LoadRom()
 	local x = 0
-	print("Length: ", #self.ROMstring)
-	for i=1,#self.ROMstring,2 do
-		self.ROM[x] = tonumber( self.ROMstring:sub(i,i+1), 16 )
-		x = x + 1
+	for i,j in ipairs(self.ROMtable) do
+		for i=1,#j,2 do
+			self.ROM[x] = tonumber( j:sub(i,i+1), 16 )
+			x = x + 1
+		end
+		print(#self.ROM)
 	end
 end

@@ -5,3 +5,5 @@ pkmnrd_rom_hex - Copy.lua
 DRACULA.GBC
 Tetris.gb
 Tetris.gb_hex.lua
+roms/**
+roms.lua
