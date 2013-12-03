@@ -4,9 +4,16 @@ local mt = gem.GBZ80
 
 local string_format = string.format
 
-local chunkSize = 4096
+local chunkSize = 32768
+
+local band = bit.band;
+local bor = bit.bor;
+local rshift = bit.rshift;
+local lshift = bit.lshift;
 
 function mt:Restart()
+	
+
 	-- Memory
 	self.Memory = {}	-- Main Memory RAM
 	self.ROM = {} 		-- Used for external Cart ROM, each bank is offset by 0x4000
@@ -171,15 +178,15 @@ function mt:Initialize()
 end
 
 function mt:KeyChanged( key, bool )
-	if key == "Start" then self.ButtonByte = (bool and bit.band(self.ButtonByte,(15 - 8)) or bit.bor(self.ButtonByte,8) ) end
-	if key == "Select" then self.ButtonByte = (bool and bit.band(self.ButtonByte,(15 - 4)) or bit.bor(self.ButtonByte,4) ) end
-	if key == "B" then self.ButtonByte = (bool and bit.band(self.ButtonByte,(15 - 2)) or bit.bor(self.ButtonByte,2) ) end
-	if key == "A" then self.ButtonByte = (bool and bit.band(self.ButtonByte,(15 - 1)) or bit.bor(self.ButtonByte,1) ) end
+	if key == "Start" then self.ButtonByte = (bool and band(self.ButtonByte,(15 - 8)) or bor(self.ButtonByte,8) ) end
+	if key == "Select" then self.ButtonByte = (bool and band(self.ButtonByte,(15 - 4)) or bor(self.ButtonByte,4) ) end
+	if key == "B" then self.ButtonByte = (bool and band(self.ButtonByte,(15 - 2)) or bor(self.ButtonByte,2) ) end
+	if key == "A" then self.ButtonByte = (bool and band(self.ButtonByte,(15 - 1)) or bor(self.ButtonByte,1) ) end
 
-	if key == "Down" then self.DPadByte = (bool and bit.band(self.DPadByte,(15 - 8)) or bit.bor(self.DPadByte,8) ) end
-	if key == "Up" then self.DPadByte = (bool and bit.band(self.DPadByte,(15 - 4)) or bit.bor(self.DPadByte,4) ) end
-	if key == "Left" then self.DPadByte = (bool and bit.band(self.DPadByte,(15 - 2)) or bit.bor(self.DPadByte,2) ) end
-	if key == "Right" then self.DPadByte = (bool and bit.band(self.DPadByte,(15 - 1)) or bit.bor(self.DPadByte,1) ) end
+	if key == "Down" then self.DPadByte = (bool and band(self.DPadByte,(15 - 8)) or bor(self.DPadByte,8) ) end
+	if key == "Up" then self.DPadByte = (bool and band(self.DPadByte,(15 - 4)) or bor(self.DPadByte,4) ) end
+	if key == "Left" then self.DPadByte = (bool and band(self.DPadByte,(15 - 2)) or bor(self.DPadByte,2) ) end
+	if key == "Right" then self.DPadByte = (bool and band(self.DPadByte,(15 - 1)) or bor(self.DPadByte,1) ) end
 end
 function mt:Think()
 	self.TotalCycles = 0
@@ -218,7 +225,7 @@ function mt:Step()
 	-- Divider, consider changing this to subtract 256 from Divider Cycles rather than setting to 0, test this as it might boost compatability.
 	self.DividerCycles = self.DividerCycles + Cycle
 	while self.DividerCycles > 255 do
-		self.Divider = bit.band((self.Divider + 1),0xFF)
+		self.Divider = band((self.Divider + 1),0xFF)
 		self.DividerCycles = self.DividerCycles - 256
 	end
 
@@ -230,7 +237,7 @@ function mt:Step()
 			self.TimerCycles = self.TimerCycles - self.TimerCounter
 			if self.Timer > 255 then -- if the timer overflows, reset the timer and do the timer interupt. 
 				self.Timer = self.TimerBase
-				self.IF = bit.bor(self.IF,4)
+				self.IF = bor(self.IF,4)
 			end
 		end
 	end
@@ -254,19 +261,19 @@ function mt:Step()
 
 		if ScanlineY >= 145 and ScanlineY <= 153 then
 
-			if Mode ~= 1 and self.ModeOneInterupt then self.IF = bit.bor(self.IF,2) end -- request LCD interupt for entering Mode 1
-			if Mode ~= 1 and ScanlineY == 145 then self.IF = bit.bor(self.IF,1) end -- Reques VBlank
+			if Mode ~= 1 and self.ModeOneInterupt then self.IF = bor(self.IF,2) end -- request LCD interupt for entering Mode 1
+			if Mode ~= 1 and ScanlineY == 145 then self.IF = bor(self.IF,1) end -- Reques VBlank
 			Mode = 1
 
 		elseif ScanlineY >= 0 and ScanlineY <= 144 then -- not vblank
 
 			if ScanCycle >= 1 and ScanCycle <= 80 then
-				if Mode ~= 2 and self.ModeTwoInterupt then self.IF = bit.bor(self.IF,2) end -- request LCD interupt for entering Mode 2
+				if Mode ~= 2 and self.ModeTwoInterupt then self.IF = bor(self.IF,2) end -- request LCD interupt for entering Mode 2
 				Mode = 2
 			elseif ScanCycle >= 81 and ScanCycle <= 252 then
 				Mode = 3
 			elseif ScanCycle >= 253 and ScanCycle <= 456 then
-				if Mode ~= 0 and self.ModeZeroInterupt then self.IF = bit.bor(self.IF,2) end -- request LCD interupt for entering Mode 0
+				if Mode ~= 0 and self.ModeZeroInterupt then self.IF = bor(self.IF,2) end -- request LCD interupt for entering Mode 0
 				Mode = 0
 			end
 
@@ -283,66 +290,66 @@ function mt:Step()
 
 
 	if ScanlineY == self.CompareY and self.CoincidenceInterupt then
-		self.IF = bit.bor(self.IF,2) -- request LCD interrupt
+		self.IF = bor(self.IF,2) -- request LCD interrupt
 	end
 	if self.IME and self.IE > 0 and self.IF > 0 then
-		if (bit.band(self.IE,1) == 1) and (bit.band(self.IF,1) == 1) then --VBlank interrupt
+		if (band(self.IE,1) == 1) and (band(self.IF,1) == 1) then --VBlank interrupt
 			--self:EnableDebugging()
 			self.IME = false
 			self.Halt = false
 
-			self.IF = bit.band(self.IF,(255 - 1))
+			self.IF = band(self.IF,(255 - 1))
 
 			self.SP = self.SP - 2
-			self:Write(self.SP + 1, bit.rshift((bit.band((self.PC),0xFF00)),8))
-			self:Write(self.SP    , bit.band((self.PC),0xFF       ))
+			self:Write(self.SP + 1, rshift((band((self.PC),0xFF00)),8))
+			self:Write(self.SP    , band((self.PC),0xFF       ))
 
 			self.PC = 0x40
-		elseif (bit.band(self.IE,2) == 2) and (bit.band(self.IF,2) == 2) then -- LCD Interrupt
+		elseif (band(self.IE,2) == 2) and (band(self.IF,2) == 2) then -- LCD Interrupt
 			self.IME = false
 			self.Halt = false
 
-			self.IF = bit.band(self.IF,(255 - 2))
+			self.IF = band(self.IF,(255 - 2))
 
 			self.SP = self.SP - 2
-			self:Write(self.SP + 1, bit.rshift((bit.band((self.PC),0xFF00)),8))
-			self:Write(self.SP    , bit.band((self.PC),0xFF       ))
+			self:Write(self.SP + 1, rshift((band((self.PC),0xFF00)),8))
+			self:Write(self.SP    , band((self.PC),0xFF       ))
 
 			self.PC = 0x48
-		elseif (bit.band(self.IE,4) == 4) and (bit.band(self.IF,4) == 4) then -- TImer Interrupt
+		elseif (band(self.IE,4) == 4) and (band(self.IF,4) == 4) then -- TImer Interrupt
 
 			self.IME = false
 			self.Halt = false
 
-			self.IF = bit.band(self.IF,(255 - 4))
+			self.IF = band(self.IF,(255 - 4))
 
 			self.SP = self.SP - 2
-			self:Write(self.SP + 1, bit.rshift((bit.band((self.PC),0xFF00)),8))
-			self:Write(self.SP    , bit.band((self.PC),0xFF       ))
+			self:Write(self.SP + 1, rshift((band((self.PC),0xFF00)),8))
+			self:Write(self.SP    , band((self.PC),0xFF       ))
 
 			self.PC = 0x50
-		elseif (bit.band(self.IE,8) == 8) and (bit.band(self.IF,8) == 8) then -- Serial Interrupt
+		elseif (band(self.IE,8) == 8) and (band(self.IF,8) == 8) then -- Serial Interrupt
 
 			self.IME = false
 			self.Halt = false
 
-			self.IF = bit.band(self.IF,(255 - 8))
+			self.IF = band(self.IF,(255 - 8))
 
 			self.SP = self.SP - 2
-			self:Write(self.SP + 1, bit.rshift((bit.band((self.PC),0xFF00)),8))
-			self:Write(self.SP    , bit.band((self.PC),0xFF       ))
+			self:Write(self.SP + 1, rshift((band((self.PC),0xFF00)),8))
+			self:Write(self.SP    , band((self.PC),0xFF       ))
 
 			self.PC = 0x58
-		elseif (bit.band(self.IE,16) == 16) and (bit.band(self.IF,16) == 16) then -- Joy Interrupt
+		elseif (band(self.IE,16) == 16) and (band(self.IF,16) == 16) then -- Joy Interrupt
 
 			self.IME = false
 			self.Halt = false
 
-			self.IF = bit.band(self.IF,(255 - 16))
+			self.IF = band(self.IF,(255 - 16))
 
 			self.SP = self.SP - 2
-			self:Write(self.SP + 1, bit.rshift((bit.band((self.PC),0xFF00)),8))
-			self:Write(self.SP    , bit.band((self.PC),0xFF       ))
+			self:Write(self.SP + 1, rshift((band((self.PC),0xFF00)),8))
+			self:Write(self.SP    , band((self.PC),0xFF       ))
 
 			self.PC = 0x60
 		end

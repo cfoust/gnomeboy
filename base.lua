@@ -255,7 +255,7 @@ taking that into account.]]
 
 	function self.initGB()
 		local gem = GBAgem
-		self.Emulator = gem.New("Tetris.gb","GBZ80");
+		self.Emulator = gem.New("Pokemon Red.gb","GBZ80");
 		if (self.Emulator) then
 			self.Emulator.colorfunc = self.setdrawcolor;
 			self.Emulator.drawfunc = self.drawrect;

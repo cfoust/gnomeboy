@@ -5,6 +5,11 @@ local mt = gem.GBZ80
 mt.MRead = {}
 local MRead = mt.MRead
 
+local band = bit.band;
+local bor = bit.bor;
+local rshift = bit.rshift;
+local lshift = bit.lshift;
+
 mt.MWrite = {}
 local MWrite = mt.MWrite
 
@@ -68,14 +73,14 @@ local function RomBankNumber( self, Addr, Data )
 	if Data == 0 then Data = 1 end
 
 	if self.CartMBCMode == 3 then
-		self.RomBank = bit.band(Data,127)
+		self.RomBank = band(Data,127)
 	end
 end
 
 local function RamBankNumber( self, Addr, Data )
 
 	if self.CartMBCMode == 3 and Data < 4 then
-		self.RamBank = bit.band(Data,3)
+		self.RamBank = band(Data,3)
 	end
 end
 
@@ -121,9 +126,9 @@ MWrite[ 0xFF04 ] = function( self, Addr, Data ) self.Divider = 0 end -- Divider 
 MWrite[ 0xFF05 ] = function( self, Addr, Data ) self.Timer = Data end -- Set timer
 MWrite[ 0xFF06 ] = function( self, Addr, Data ) self.TimerBase = Data end -- Set timer base
 MWrite[ 0xFF07 ] = function( self, Addr, Data )
-	self.Memory[ 0xFF07 ] = bit.band(Data,5) -- Better Safe than sorry
-	self.TimerCounter = self.TimerDB[bit.band(Data,0x3)] -- Set the timer incriment rate to the first 2 bits with a lookup DB
-	self.TimerEnabled = bit.band(Data,0x4) == 0x4 -- 3rd byte enables/disables the timer
+	self.Memory[ 0xFF07 ] = band(Data,5) -- Better Safe than sorry
+	self.TimerCounter = self.TimerDB[band(Data,0x3)] -- Set the timer incriment rate to the first 2 bits with a lookup DB
+	self.TimerEnabled = band(Data,0x4) == 0x4 -- 3rd byte enables/disables the timer
 end
 
 
@@ -163,14 +168,14 @@ MWrite[ 0xFF40 ] = function( self, Addr, Data )
 
 	self.Memory[Addr] = Data
 
-	self.LCDEnable = bit.band(128,Data) == 128
-	self.WindowMap = ((bit.band(64,Data) == 64 and 0x9C00 or 0x9800))
-	self.WindowEnable = bit.band(32,Data) == 32
-	self.TileData = (bit.band(16,Data) == 16 and 0x8000 or 0x8800)
-	self.BGMap =(bit.band(8,Data) == 8 and 0x9C00 or 0x9800)
-	self.SpriteSize = (bit.band(4,Data) == 4 and 16 or 8)
-	self.SpriteEnable = bit.band(2,Data) == 2
-	self.BGEnable = bit.band(1,Data) == 1
+	self.LCDEnable = band(128,Data) == 128
+	self.WindowMap = ((band(64,Data) == 64 and 0x9C00 or 0x9800))
+	self.WindowEnable = band(32,Data) == 32
+	self.TileData = (band(16,Data) == 16 and 0x8000 or 0x8800)
+	self.BGMap =(band(8,Data) == 8 and 0x9C00 or 0x9800)
+	self.SpriteSize = (band(4,Data) == 4 and 16 or 8)
+	self.SpriteEnable = band(2,Data) == 2
+	self.BGEnable = band(1,Data) == 1
 
 end
 
@@ -178,21 +183,21 @@ end
 
 MRead[ 0xFF41 ] = function( self, Addr )
 	local Mem1 = 0
-	Mem1 = bit.bor(Mem1,(self.CoincidenceInterupt and 64 or 0))
-	Mem1 = bit.bor(Mem1,(self.ModeTwoInterupt and 32 or 0))
-	Mem1 = bit.bor(Mem1,(self.ModeOneInterupt and 16 or 0))
-	Mem1 = bit.bor(Mem1,(self.ModeZeroInterupt and 8 or 0))
-	Mem1 = bit.bor(Mem1,(self.CompareY == self.ScanlineY and 4 or 0))
-	Mem1 = bit.bor(Mem1,bit.band(self.Mode,3))
+	Mem1 = bor(Mem1,(self.CoincidenceInterupt and 64 or 0))
+	Mem1 = bor(Mem1,(self.ModeTwoInterupt and 32 or 0))
+	Mem1 = bor(Mem1,(self.ModeOneInterupt and 16 or 0))
+	Mem1 = bor(Mem1,(self.ModeZeroInterupt and 8 or 0))
+	Mem1 = bor(Mem1,(self.CompareY == self.ScanlineY and 4 or 0))
+	Mem1 = bor(Mem1,band(self.Mode,3))
 
 	return Mem1
 end
 
 MWrite[ 0xFF41 ] = function( self, Addr, Data )
-	self.CoincidenceInterupt = bit.band(64,Data) == 64
-	self.ModeTwoInterupt = bit.band(32,Data) == 32
-	self.ModeOneInterupt = bit.band(16,Data) == 16
-	self.ModeZeroInterupt = bit.band(8,Data) == 8
+	self.CoincidenceInterupt = band(64,Data) == 64
+	self.ModeTwoInterupt = band(32,Data) == 32
+	self.ModeOneInterupt = band(16,Data) == 16
+	self.ModeZeroInterupt = band(8,Data) == 8
 end
 
 
@@ -207,8 +212,8 @@ MRead[ 0xFF00 ]= function( self, Addr )
 end
 
 MWrite[ 0xFF00 ] = function( self, Addr, Data )
-	self.SelectDirectionKeys = bit.band(Data,16) == 16 
-	self.SelectButtonKeys = bit.band(Data,32) == 32
+	self.SelectDirectionKeys = band(Data,16) == 16 
+	self.SelectButtonKeys = band(Data,32) == 32
 end
 
 
@@ -217,10 +222,10 @@ end
 MRead[ 0xFF46 ]= function( self, Addr ) return 0 end
 
 MWrite[ 0xFF46 ] = function( self, Addr, Data )
-	DMAddr = bit.lshift(Data,8)
+	DMAddr = lshift(Data,8)
 
 	for n = 0, 0xA0 do
-		self.Memory[ bit.bor(0xFE00,n) ] = self.Memory[ bit.bor(DMAddr,n) ]
+		self.Memory[ bor(0xFE00,n) ] = self.Memory[ bor(DMAddr,n) ]
 	end
 end
 
@@ -236,11 +241,11 @@ end
 
 -- Interupt Enable
 MRead[ 0xFFFF ] = function( self, Addr ) return self.IE end
-MWrite[ 0xFFFF ] = function( self, Addr, Data ) self.IE = bit.band(Data,0x1F) end
+MWrite[ 0xFFFF ] = function( self, Addr, Data ) self.IE = band(Data,0x1F) end
 
 -- Interupt Request
 MRead[ 0xFF0F ] = function( self, Addr )  return self.IF end
-MWrite[ 0xFF0F ] = function( self, Addr, Data ) self.IF = bit.band(0x1F,Data) end
+MWrite[ 0xFF0F ] = function( self, Addr, Data ) self.IF = band(0x1F,Data) end
 
 
 

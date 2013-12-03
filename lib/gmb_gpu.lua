@@ -4,6 +4,10 @@ local mt = gem.GBZ80
 
 local math_ceil = math.ceil
 local math_floor = math.floor
+local band = bit.band;
+local bor = bit.bor;
+local rshift = bit.rshift;
+local lshift = bit.lshift;
 
 function mt:Draw()
 	if self.FrameSkip ~= 0 then
@@ -25,7 +29,7 @@ function mt:Draw()
 	if self.BGEnable then
 
 		local PalMem = self.Memory[ 0xFF47 ]
-		local BGPal = { bit.band(bit.rshift(PalMem,2),3), bit.band(bit.rshift(PalMem,4),3), bit.band(bit.rshift(PalMem,6),3) }; BGPal[0] = bit.band((PalMem),3)
+		local BGPal = { band(rshift(PalMem,2),3), band(rshift(PalMem,4),3), band(rshift(PalMem,6),3) }; BGPal[0] = band((PalMem),3)
 
 		local TileX = math_floor(self.ScrollX/8)
 		local TileY = math_floor(self.ScrollY/8)
@@ -41,8 +45,8 @@ function mt:Draw()
 				local iy = (i + TileY)
 				local jx = (j + TileX)
 
-				local ii = bit.band(iy,0x1F) -- Wrap Around
-				local jj = bit.band(jx,0x1F) -- Wrap Around
+				local ii = band(iy,0x1F) -- Wrap Around
+				local jj = band(jx,0x1F) -- Wrap Around
 
 
 
@@ -53,7 +57,7 @@ function mt:Draw()
 					TileID = self.Memory[ TileMap + ii*32 + jj ]
 				else
 					TileID = self.Memory[ TileMap + ii*32 + jj ]
-					TileID = bit.band(TileID,127) - bit.band(TileID,128)
+					TileID = band(TileID,127) - band(TileID,128)
 					TileData = 0x9000
 				end
 
@@ -68,15 +72,15 @@ function mt:Draw()
 
 						for l = 0,7 do
 
-							local BitA = bit.band(bit.rshift(ByteA,l),1) --that's a lower-case L, not a 1
-							local BitB = bit.band(bit.rshift(ByteB,l),1)
+							local BitA = band(rshift(ByteA,l),1) --that's a lower-case L, not a 1
+							local BitB = band(rshift(ByteB,l),1)
 								
 							local PixelX = (jx*8 - l + 7	) - self.ScrollX
 							local PixelY = (iy*8 + k + 0) - self.ScrollY
 
 							if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
-								local Colour = self.ColourDB[ BGPal[ bit.bor(bit.lshift(BitB,1),BitA)] ]
+								local Colour = self.ColourDB[ BGPal[ bor(lshift(BitB,1),BitA)] ]
 
 								local ArrayCoords = (PixelX + 1) + (PixelY + 1)*170
 
@@ -108,7 +112,7 @@ function mt:Draw()
 		YMax = math_floor((144 - WindowY)/8)
 
 		local PalMem = self.Memory[ 0xFF47 ]
-		local WinPal = { bit.band(bit.rshift(PalMem,2),3), bit.band(bit.rshift(PalMem,4),3), bit.band(bit.rshift(PalMem,6),3) }; WinPal[0] = bit.band((PalMem),3)
+		local WinPal = { band(rshift(PalMem,2),3), band(rshift(PalMem,4),3), band(rshift(PalMem,6),3) }; WinPal[0] = band((PalMem),3)
 
 		local WinMap = self.WindowMap
 		local TileData = self.TileData
@@ -124,7 +128,7 @@ function mt:Draw()
 				else
 					TileID = self.Memory[ WinMap + i*32 + j ]
 					TileID = TileID or 0
-					TileID = bit.band(TileID,127) - bit.band(TileID,128)
+					TileID = band(TileID,127) - band(TileID,128)
 					
 					
 					TileData = 0x9000
@@ -138,15 +142,15 @@ function mt:Draw()
 
 					for l = 0,7 do
 
-						local BitA = bit.band(bit.rshift(ByteA,l),1) --that's a lower-case L, not a 1
-						local BitB = bit.band(bit.rshift(ByteB,l),1)
+						local BitA = band(rshift(ByteA,l),1) --that's a lower-case L, not a 1
+						local BitB = band(rshift(ByteB,l),1)
 							
 						local PixelX = (j*8 - l + 7 ) + WindowX 
 						local PixelY = (i*8 + k ) + WindowY
 
 						if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
-							local Colour = self.ColourDB[ WinPal[ bit.bor(bit.lshift(BitB,1),BitA)] ]
+							local Colour = self.ColourDB[ WinPal[ bor(lshift(BitB,1),BitA)] ]
 
 							local ArrayCoords = (PixelX + 1) + (PixelY + 1)*170
 
@@ -174,23 +178,23 @@ function mt:Draw()
 		local PalMem1 = self.Memory[ 0xFF49 ]
 		local PalMem2 = self.Memory[ 0xFF48 ]
 		for n = 0, 159, 4 do
-			local YPos = self.Memory[ bit.bor( 0xFE00 ,n) ]
+			local YPos = self.Memory[ bor( 0xFE00 ,n) ]
 			if YPos > 0 and YPos < 160 then
-				local XPos = self.Memory[ bit.bor( 0xFE00 ,(n+1)) ]
+				local XPos = self.Memory[ bor( 0xFE00 ,(n+1)) ]
 				if XPos > 0 and XPos < 168 then
 
-					local SpriteFlags = self.Memory[ bit.bor( 0xFE00,(n+3)) ]
+					local SpriteFlags = self.Memory[ bor( 0xFE00,(n+3)) ]
 					
-					local TileID = self.Memory[ bit.bor( 0xFE00 ,(n+2)) ]
-					local Alpha =  bit.band(SpriteFlags,128) == 128
-					local YFlip = bit.band(SpriteFlags,64)    == 64
-					local XFlip = bit.band(SpriteFlags,32)    == 32
-					local SPalID = bit.band(SpriteFlags,16)   == 16
+					local TileID = self.Memory[ bor( 0xFE00 ,(n+2)) ]
+					local Alpha =  band(SpriteFlags,128) == 128
+					local YFlip = band(SpriteFlags,64)    == 64
+					local XFlip = band(SpriteFlags,32)    == 32
+					local SPalID = band(SpriteFlags,16)   == 16
 
 					if SPalID then
-						SpPal = { bit.band(bit.rshift(PalMem1,2),3), bit.band(bit.rshift(PalMem1,4),3), bit.band(bit.rshift(PalMem1,6),3) }
+						SpPal = { band(rshift(PalMem1,2),3), band(rshift(PalMem1,4),3), band(rshift(PalMem1,6),3) }
 					else
-						SpPal = { bit.band(bit.rshift(PalMem2,2),3), bit.band(bit.rshift(PalMem2,4),3), bit.band(bit.rshift(PalMem2,6),3) }
+						SpPal = { band(rshift(PalMem2,2),3), band(rshift(PalMem2,4),3), band(rshift(PalMem2,6),3) }
 					end
 
 					TileID = TileID or 0
@@ -201,17 +205,17 @@ function mt:Draw()
 
 						for j = 0,7 do
 
-							local BitA = bit.band(bit.rshift(ByteA,j),1) 
-							local BitB = bit.band(bit.rshift(ByteB,j),1)
+							local BitA = band(rshift(ByteA,j),1) 
+							local BitB = band(rshift(ByteB,j),1)
 
-							if bit.bor(bit.lshift(BitB,1),BitA) > 0 then
+							if bor(lshift(BitB,1),BitA) > 0 then
 
 								local PixelX = XPos - 1 + (XFlip and j - 7 or -j)
 								local PixelY = YPos - 16 + (YFlip and -i + 7 or i)
 
 								local ArrayCoords = (PixelX + 1) + (PixelY + 1)*170
 								
-								local Colour = self.ColourDB[ SpPal[ bit.bor(bit.lshift(BitB,1),BitA)] ]
+								local Colour = self.ColourDB[ SpPal[ bor(lshift(BitB,1),BitA)] ]
 
 								if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
@@ -240,23 +244,23 @@ function mt:Draw()
 		local PalMem2 = self.Memory[ 0xFF48 ]
 
 		for n = 0, 159, 4 do
-			local YPos = self.Memory[ bit.bor(0xFE00,n) ]
+			local YPos = self.Memory[ bor(0xFE00,n) ]
 			if YPos > 0 and YPos < 160 then
-				local XPos = self.Memory[ bit.bor(0xFE00,(n+1)) ]
+				local XPos = self.Memory[ bor(0xFE00,(n+1)) ]
 				if XPos > 0 and XPos < 168 then
 
-					local SpriteFlags = self.Memory[ bit.bor(0xFE00,(n+3)) ]
+					local SpriteFlags = self.Memory[ bor(0xFE00,(n+3)) ]
 					
-					local TileID = bit.band(self.Memory[ bit.bor(0xFE00,(n+2)) ],0xFE)
-					local Alpha =  bit.band(SpriteFlags,128) == 128
-					local YFlip = bit.band(SpriteFlags,64)    == 64
-					local XFlip = bit.band(SpriteFlags,32)    == 32
-					local SPalID = bit.band(SpriteFlags,16)   == 16
+					local TileID = band(self.Memory[ bor(0xFE00,(n+2)) ],0xFE)
+					local Alpha =  band(SpriteFlags,128) == 128
+					local YFlip = band(SpriteFlags,64)    == 64
+					local XFlip = band(SpriteFlags,32)    == 32
+					local SPalID = band(SpriteFlags,16)   == 16
 
 					if SPalID then
-						SpPal = { bit.band(bit.rshift(PalMem1,2),3), bit.band(bit.rshift(PalMem1,4),3), bit.band(bit.rshift(PalMem1,6),3) }
+						SpPal = { band(rshift(PalMem1,2),3), band(rshift(PalMem1,4),3), band(rshift(PalMem1,6),3) }
 					else
-						SpPal = { bit.band(bit.rshift(PalMem2,2),3), bit.band(bit.rshift(PalMem2,4),3), bit.band(bit.rshift(PalMem2,6),3) }
+						SpPal = { band(rshift(PalMem2,2),3), band(rshift(PalMem2,4),3), band(rshift(PalMem2,6),3) }
 					end
 
 
@@ -267,17 +271,17 @@ function mt:Draw()
 
 						for j = 0,7 do
 
-							local BitA = bit.band(bit.rshift(ByteA,j),1) 
-							local BitB = bit.band(bit.rshift(ByteB,j),1)
+							local BitA = band(rshift(ByteA,j),1) 
+							local BitB = band(rshift(ByteB,j),1)
 
-							if bit.bor(bit.lshift(BitB,1),BitA) > 0 then
+							if bor(lshift(BitB,1),BitA) > 0 then
 
 								local PixelX = XPos - 1 + (XFlip and j - 7 or -j)
 								local PixelY = YPos - 16 + (YFlip and -i + 7 or i) + (YFlip and 8 or 0)
 
 								local ArrayCoords = (PixelX + 1) + (PixelY + 1)*170
 								
-								local Colour = self.ColourDB[ SpPal[ bit.bor(bit.lshift(BitB,1),BitA)] ]
+								local Colour = self.ColourDB[ SpPal[ bor(lshift(BitB,1),BitA)] ]
 
 								if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
@@ -301,7 +305,7 @@ function mt:Draw()
 					n2 = n + 1
 					
 					
-					local TileID = bit.bor(TileID,0x01)
+					local TileID = bor(TileID,0x01)
 
 
 					for i = 0,7 do
@@ -311,17 +315,17 @@ function mt:Draw()
 
 						for j = 0,7 do
 
-							local BitA = bit.band(bit.rshift(ByteA,j),1) 
-							local BitB = bit.band(bit.rshift(ByteB,j),1)
+							local BitA = band(rshift(ByteA,j),1) 
+							local BitB = band(rshift(ByteB,j),1)
 
-							if bit.bor(bit.lshift(BitB,1),BitA) > 0 then
+							if bor(lshift(BitB,1),BitA) > 0 then
 
 								local PixelX = XPos - 1 + (XFlip and j - 7 or -j) 
 								local PixelY = YPos - 16 + (YFlip and -i + 7 or i) + (YFlip and 0 or 8)
 
 								local ArrayCoords = (PixelX + 1) + (PixelY + 1)*170
 								
-								local Colour = self.ColourDB[ SpPal[bit.bor(bit.lshift(BitB,1),BitA)] ]
+								local Colour = self.ColourDB[ SpPal[bor(lshift(BitB,1),BitA)] ]
 
 								if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
