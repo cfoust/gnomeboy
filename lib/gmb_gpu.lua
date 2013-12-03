@@ -2,8 +2,6 @@ local self = GnomeBoyAdvance
 local gem = GBAgem
 local mt = gem.GBZ80
 
-local surface_DrawRect = GBA_surface_drawRect
-local surface_SetDrawColor = GBA_surface_SetDrawColor
 local math_ceil = math.ceil
 local math_floor = math.floor
 
@@ -84,8 +82,13 @@ function mt:Draw()
 
 								if self.Pixels[ArrayCoords] ~= Colour then
 
-									surface_SetDrawColor( Colour, Colour, Colour, 255 )
-									surface_DrawRect( PixelX, PixelY, 1 , 1 ) 
+									if (self.colorfunc) then
+										self.colorfunc( Colour, Colour, Colour, 255 )
+									end
+
+									if (self.drawfunc) then
+										self.drawfunc( PixelX, PixelY, 1 , 1 ) 
+									end
 
 									self.Pixels[ArrayCoords] = Colour
 
@@ -149,10 +152,15 @@ function mt:Draw()
 
 							if self.Pixels[ArrayCoords] ~= Colour then
 
-								surface_SetDrawColor( Colour, Colour, Colour, 255 )
-								--surface_DrawRect( PixelX, PixelY, 1 , 1 ) 
-								--surface_DrawRect( PixelX*3 + 16, PixelY*3 + 40, 3 , 3 ) 
-								surface_DrawRect( PixelX, PixelY, 1 , 1 ) 
+								if (self.colorfunc) then
+									self.colorfunc( Colour, Colour, Colour, 255 )
+								end
+
+								if (self.drawfunc) then
+									self.drawfunc( PixelX, PixelY, 1 , 1 ) 
+								end
+								
+								
 
 								self.Pixels[ArrayCoords] = Colour
 							end
@@ -209,8 +217,13 @@ function mt:Draw()
 
 									if self.Pixels[ArrayCoords] ~= Colour then
 
-										surface_SetDrawColor( Colour, Colour, Colour, 255 )
-										surface_DrawRect( PixelX, PixelY, 1 , 1) 
+										if (self.colorfunc) then
+											self.colorfunc( Colour, Colour, Colour, 255 )
+										end
+
+										if (self.drawfunc) then
+											self.drawfunc( PixelX, PixelY, 1 , 1 ) 
+										end
 
 										self.Pixels[ArrayCoords] = Colour
 
@@ -269,8 +282,13 @@ function mt:Draw()
 								if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
 									if self.Pixels[ArrayCoords] ~= Colour then
-										surface_SetDrawColor( Colour, Colour, Colour, 255 )
-										surface_DrawRect( PixelX, PixelY, 1 , 1 ) 
+										if (self.colorfunc) then
+											self.colorfunc( Colour, Colour, Colour, 255 )
+										end
+
+										if (self.drawfunc) then
+											self.drawfunc( PixelX, PixelY, 1 , 1 ) 
+										end
 
 										self.Pixels[ArrayCoords] = Colour
 
@@ -308,8 +326,13 @@ function mt:Draw()
 								if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
 									if self.Pixels[ArrayCoords] ~= Colour then
-										surface_SetDrawColor( Colour, Colour, Colour, 255 )
-										surface_DrawRect( PixelX, PixelY, 1 , 1 ) 
+										if (self.colorfunc) then
+											self.colorfunc( Colour, Colour, Colour, 255 )
+										end
+
+										if (self.drawfunc) then
+											self.drawfunc( PixelX, PixelY, 1 , 1 ) 
+										end
 
 										self.Pixels[ArrayCoords] = Colour
 

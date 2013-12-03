@@ -4,13 +4,14 @@ local mt = gem.GBZ80
 
 local string_format = string.format
 
+local chunkSize = 4096
+
 function mt:Restart()
 	-- Memory
 	self.Memory = {}	-- Main Memory RAM
 	self.ROM = {} 		-- Used for external Cart ROM, each bank is offset by 0x4000
 	self.ROM.mt = {}
 	setmetatable(self.ROM,self.ROM.mt)
-	local chunkSize = 4096;
 	self.ROM.mt.__index = function (table,key)
 		local locval = (key % chunkSize)+1;
 		local plate = math.ceil(key/chunkSize);
@@ -18,6 +19,8 @@ function mt:Restart()
 	end
 
 	self:LoadRom()
+
+	self.RUNNING = true;
 
 	self.RAM = {}		-- Used for external Cart RAM
 
@@ -351,7 +354,6 @@ local string_sub = string.sub
 
 function mt:LoadRom()
 	local x = 0
-	local chunkSize = 4096;
 	for i,j in ipairs(self.ROMtable) do
 		for i=1,#j,2 do
 			local locval = (x % chunkSize)+1;
