@@ -14,6 +14,10 @@ end
 
 function GenerateGB()
 	local self = CreateFrame("Frame","GnomeBoy",UIParent)
+
+	local platebtn = CreateFrame("Button",nil,self,"UIPanelButtonTemplate")
+	platebtn:SetSize(50,50)
+	platebtn:SetPoint("TOPRIGHT",self,"TOPLEFT")
 	do
 		self:EnableMouse(true)
 		self:RegisterForDrag("LeftButton")
@@ -25,6 +29,29 @@ function GenerateGB()
 		self:SetScript("OnDragStop",function(self)
 		  self:StopMovingOrSizing() 
 		end)
+
+		platebtn:SetScript( "OnEnter", function(frame) 
+			GameTooltip:SetOwner( frame, "ANCHOR_CURSOR" )
+			local text = "|cFF696969Right|r click to make Gnome Boy smaller. \n|cFF696969Left|r click to make Gnome Boy bigger. ";
+			GameTooltip:SetText(text);
+		end )
+		platebtn:SetScript( "OnLeave", GameTooltip_Hide )
+		platebtn:RegisterForClicks("LeftButtonUp","RightButtonUp")
+		platebtn:SetScript("OnClick",function(btn,button,down)
+			if (button == "LeftButton") then
+				self:SetSizeDelta(30);
+			else
+				self:SetSizeDelta(-30);
+			end
+		end)
+
+		self:SetScript( "OnEnter", function(frame) 
+			GameTooltip:SetOwner( frame, "ANCHOR_CURSOR" )
+			local text = "Drag to move.";
+			GameTooltip:SetText(text);
+		end )
+		self:SetScript( "OnLeave", GameTooltip_Hide )
+
 		self:SetFrameLevel(5)
 	end
 
@@ -39,13 +66,27 @@ function GenerateGB()
 	function self:setUp(self,size)
 		self:SetSize(size,(840/512)*size)
 	end
-	function self:Resolute()
+	local function resoluteRatioBtn(button,x1,y1,x2,y2)
+		button:SetPoint("TOPLEFT",self,"TOPLEFT",ratioW(x1),-1*ratioH(y1))
+		button:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",ratioW(x2),-1*ratioH(y2))
+	end
+	function self:Resolute(width)
+		self:setUp(self,width)
 		self.Screen:SetPoint("TOPLEFT",self,"TOPLEFT",ratioW(969),-1*ratioH(890))
 		self.Screen:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",ratioW(3022),-1*ratioH(2765))
+		resoluteRatioBtn(self.buttons.a,3146,3955,3693,4509)
+		resoluteRatioBtn(self.buttons.b,2501,4233,3032,4829)
+		resoluteRatioBtn(self.buttons.start,1868,5195,2351,5546)
+		resoluteRatioBtn(self.buttons.select,1217,5209,1687,5544)
+		resoluteRatioBtn(self.buttons.up,636,3911,1025,4205)
+		resoluteRatioBtn(self.buttons.left,330,4229,613,4615)
+		resoluteRatioBtn(self.buttons.right,1040,4234,1326,4615)
+		resoluteRatioBtn(self.buttons.down,644,4647,1024,4920)
+		resoluteRatioBtn(self.buttons.on,395,0,1334,371)
 	end
-	-- function self:SetSizeDelta(delta)
-	--   if ((self:GetWidth()+delta) > 220) and ((self:GetWidth()+delta) < 700) then self:Resolute(self:GetWidth()+delta) end
-	-- end
+	function self:SetSizeDelta(delta)
+	  if ((self:GetWidth()+delta) > 220) and ((self:GetWidth()+delta) < 500) then self:Resolute(self:GetWidth()+delta) end
+	end
 	self:setUp(self,400)
 
 	do
@@ -131,6 +172,10 @@ function GenerateGB()
 				self:SetMovable(false)
 				self:SetScript("OnDragStart",nil)
 				self:SetScript("OnDragStop",nil)
+				platebtn:Hide()
+
+				self:SetScript( "OnEnter",nil)
+				self:SetScript( "OnLeave", nil)
 			end
 		end)
 		buttons.on:SetScript( "OnEnter", function(frame) 
