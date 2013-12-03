@@ -9,15 +9,15 @@ function UseControl(string,bool)
 	self.Emulator:KeyChanged(string,bool)
 end
 
-GB_RUNNING = true
+self.RUNNING = true
 function StartGameBoy()
 	-- GBALoadROM("Pokemon Red.gb","GBZ80")
 	GBALoadROM("Tetris.gb","GBZ80")
 	local framelimit = 25;
 	local sinceLast = 0;
 	local time = 1000/framelimit;
-	self:SetScript("OnUpdate",function(self,elapsed)
-		if (GB_RUNNING) then
+	self:SetScript("OnUpdate",function(frame,elapsed)
+		if (self.RUNNING == true) then
 			sinceLast = sinceLast + elapsed*1000;
 			if (sinceLast > time) then
 				self.Emulator:Think();
