@@ -318,7 +318,6 @@ end
 ------------------------
 
 function mt:Read(Addr)
-
 	-- This checking shouldn't be necessary in the long run once all fringe cases are accounted for
 	local func = self.MRead[Addr]
 	if func then

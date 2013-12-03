@@ -11,6 +11,7 @@ end
 
 GB_RUNNING = true
 function StartGameBoy()
+	-- GBALoadROM("Pokemon Red.gb","GBZ80")
 	GBALoadROM("Tetris.gb","GBZ80")
 	local framelimit = 25;
 	local sinceLast = 0;
@@ -24,6 +25,5 @@ function StartGameBoy()
 				sinceLast = 0;
 			end
 		end
-		
 	end);
 end

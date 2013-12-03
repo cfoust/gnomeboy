@@ -8,9 +8,20 @@ function mt:Restart()
 	-- Memory
 	self.Memory = {}	-- Main Memory RAM
 	self.ROM = {} 		-- Used for external Cart ROM, each bank is offset by 0x4000
-	self.RAM = {}		-- Used for external Cart RAM
+	self.ROM.mt = {}
+	setmetatable(self.ROM,self.ROM.mt)
+	local chunkSize = 4096;
+	self.ROM.mt.__index = function (table,key)
+		local locval = (key % chunkSize)+1;
+		local plate = math.ceil(key/chunkSize);
+		return _G["GB_ROM_PLATE_"..plate][locval];
+	end
 
 	self:LoadRom()
+
+	self.RAM = {}		-- Used for external Cart RAM
+
+	-- self:LoadRom()
 	for i = 0, 0x1FFFF do
 		self.Memory[i] = 0
 		self.RAM[i] = 0
@@ -340,11 +351,16 @@ local string_sub = string.sub
 
 function mt:LoadRom()
 	local x = 0
+	local chunkSize = 4096;
 	for i,j in ipairs(self.ROMtable) do
 		for i=1,#j,2 do
-			self.ROM[x] = tonumber( j:sub(i,i+1), 16 )
+			local locval = (x % chunkSize)+1;
+			local plate = math.ceil(x/chunkSize);
+			if (_G["GB_ROM_PLATE_"..plate] == nil) then
+				_G["GB_ROM_PLATE_"..plate] = {}
+			end
+			_G["GB_ROM_PLATE_"..plate][locval] = tonumber( j:sub(i,i+1), 16 )
 			x = x + 1
 		end
-		print(#self.ROM)
 	end
 end
