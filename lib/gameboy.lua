@@ -19,13 +19,13 @@ function mt:Restart()
 	self.ROM = {} 		-- Used for external Cart ROM, each bank is offset by 0x4000
 	self.ROM.mt = {}
 	setmetatable(self.ROM,self.ROM.mt)
+
 	self.ROM.mt.__index = function (table,key)
 		local locval = (key % chunkSize)+1;
 		local plate = math.ceil(key/chunkSize);
-		return _G["GB_ROM_PLATE_"..plate][locval];
+		return self.ROMPlates[plate][locval];
 	end
 
-	self:LoadRom()
 
 	self.RUNNING = true;
 
@@ -166,7 +166,6 @@ function mt:Restart()
 	self.oldPC = 0
 	self.NextPC = 0
 	self.Iter = 0
-	print("GB done loading")
 end
 
 ----------------------------------------------------------------------
@@ -359,17 +358,35 @@ end
 local string_byte = string.byte
 local string_sub = string.sub
 
-function mt:LoadRom()
+function mt:LoadRom(romname)
+
+	self.ROMtable = GB_GET_ROM(romname)
+
+	if (GB_ROM_PLATES ~= nil) then
+		for i=1,GB_ROM_PLATES do
+			_G["GB_ROM_PLATE_"..i] = nil;
+			self.ROMPlates[i] = nil;
+		end
+		collectgarbage()
+	end
+
 	local x = 0
+	self.ROMPlates = {}
+	local maxPlate = 0;
 	for i,j in ipairs(self.ROMtable) do
 		for i=1,#j,2 do
 			local locval = (x % chunkSize)+1;
 			local plate = math.ceil(x/chunkSize);
 			if (_G["GB_ROM_PLATE_"..plate] == nil) then
 				_G["GB_ROM_PLATE_"..plate] = {}
-			end
+				self.ROMPlates[plate] = _G["GB_ROM_PLATE_"..plate];
+ 			end
+ 			if (plate > maxPlate) then
+ 				maxPlate = plate;
+ 			end
 			_G["GB_ROM_PLATE_"..plate][locval] = tonumber( j:sub(i,i+1), 16 )
 			x = x + 1
 		end
 	end
+	GB_ROM_PLATES = maxPlate
 end

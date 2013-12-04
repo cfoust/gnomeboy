@@ -1,5 +1,5 @@
 ﻿## Interface: 50100
-## Title: Gnome Boy Color
+## Title: Gnome Boy
 ## Version: 0.1
 ## Author: Nyctrennis
 ## Notes: You bet.

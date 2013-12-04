@@ -163,8 +163,8 @@ function GenerateGB()
 				self.Emulator.RUNNING = not self.Emulator.RUNNING;
 			end
 			if (self.SCREENGEN == false) then
-				self.initScreen();
-				self.initGB();
+				self:initScreen();
+				self:initGB();
 				self.SCREENGEN = true;
 
 				self:EnableMouse(false)
@@ -208,7 +208,7 @@ taking that into account.]]
 			["g"] = 54,
 			["b"] = 10
 		};
-		function self.initScreen()
+		function self:initScreen()
 			local base = self.Screen;
 			base.pixels = {}
 			for i = 1, py do
@@ -253,17 +253,26 @@ taking that into account.]]
 		end
 	end
 
-	function self.initGB()
+	function self:initGB()
 		local gem = GBAgem
-		self.Emulator = gem.New("Pokemon Red.gb","GBZ80");
+		self.Emulator = gem.New();
 		if (self.Emulator) then
 			self.Emulator.colorfunc = self.setdrawcolor;
 			self.Emulator.drawfunc = self.drawrect;
 		end
-		local framelimit = 25;
-		local sinceLast = 0;
-		local time = 1000/framelimit;
-		self:SetScript("OnUpdate",function(frame,elapsed)
+		self:LoadRom("Tetris.gb")
+	end
+	function self:LoadRom(romname)
+		self.Emulator.RUNNING = false;
+		self.Emulator:Restart()
+		self.Emulator:LoadRom(romname);
+		self.Emulator.RUNNING = true;
+	end
+	local framelimit = 40;
+	local sinceLast = 0;
+	local time = 1000/framelimit;
+	self:SetScript("OnUpdate",function(frame,elapsed)
+		if (self.Emulator) then
 			if (self.Emulator.RUNNING == true) then
 				sinceLast = sinceLast + elapsed*1000;
 				if (sinceLast > time) then
@@ -272,8 +281,9 @@ taking that into account.]]
 					sinceLast = 0;
 				end
 			end
-		end);
-	end
+		end
+		
+	end);
 
 	self:Show()
 	
