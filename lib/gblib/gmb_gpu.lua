@@ -17,7 +17,7 @@ function mt:Draw()
 		self.FrameSkip = 2
 	end
 	local WindowX = self.WindowX
-	local WindowY = self.WindowY
+	local WindowY = self.WindowY	
 
 	local XMax = 21
 	local YMax = 19
@@ -86,13 +86,9 @@ function mt:Draw()
 
 								if self.Pixels[ArrayCoords] ~= Colour then
 
-									if (self.colorfunc) then
-										self.colorfunc( Colour, Colour, Colour, 255 )
-									end
-
-									if (self.drawfunc) then
-										self.drawfunc( PixelX, PixelY, 1 , 1 ) 
-									end
+									
+									self.colorfunc( Colour, Colour, Colour, 255 )
+									self.drawfunc( PixelX, PixelY, 1 , 1 ) 
 
 									self.Pixels[ArrayCoords] = Colour
 
@@ -155,17 +151,8 @@ function mt:Draw()
 							local ArrayCoords = (PixelX + 1) + (PixelY + 1)*170
 
 							if self.Pixels[ArrayCoords] ~= Colour then
-
-								if (self.colorfunc) then
-									self.colorfunc( Colour, Colour, Colour, 255 )
-								end
-
-								if (self.drawfunc) then
-									self.drawfunc( PixelX, PixelY, 1 , 1 ) 
-								end
-								
-								
-
+								self.colorfunc( Colour, Colour, Colour, 255 )
+								self.drawfunc( PixelX, PixelY, 1 , 1 ) 
 								self.Pixels[ArrayCoords] = Colour
 							end
 						end
@@ -221,13 +208,9 @@ function mt:Draw()
 
 									if self.Pixels[ArrayCoords] ~= Colour then
 
-										if (self.colorfunc) then
-											self.colorfunc( Colour, Colour, Colour, 255 )
-										end
-
-										if (self.drawfunc) then
-											self.drawfunc( PixelX, PixelY, 1 , 1 ) 
-										end
+										
+										self.colorfunc( Colour, Colour, Colour, 255 )
+										self.drawfunc( PixelX, PixelY, 1 , 1 ) 
 
 										self.Pixels[ArrayCoords] = Colour
 
@@ -286,13 +269,9 @@ function mt:Draw()
 								if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
 									if self.Pixels[ArrayCoords] ~= Colour then
-										if (self.colorfunc) then
-											self.colorfunc( Colour, Colour, Colour, 255 )
-										end
-
-										if (self.drawfunc) then
-											self.drawfunc( PixelX, PixelY, 1 , 1 ) 
-										end
+										
+										self.colorfunc( Colour, Colour, Colour, 255 )
+										self.drawfunc( PixelX, PixelY, 1 , 1 ) 
 
 										self.Pixels[ArrayCoords] = Colour
 
@@ -330,13 +309,9 @@ function mt:Draw()
 								if PixelX >= 0 and PixelX < 160 and PixelY >= 0 and PixelY < 144 then
 
 									if self.Pixels[ArrayCoords] ~= Colour then
-										if (self.colorfunc) then
-											self.colorfunc( Colour, Colour, Colour, 255 )
-										end
-
-										if (self.drawfunc) then
-											self.drawfunc( PixelX, PixelY, 1 , 1 ) 
-										end
+										
+										self.colorfunc( Colour, Colour, Colour, 255 )
+										self.drawfunc( PixelX, PixelY, 1 , 1 ) 
 
 										self.Pixels[ArrayCoords] = Colour
 
@@ -350,10 +325,3 @@ function mt:Draw()
 		end
 	end
 end
-
-
-
-
-
-
-

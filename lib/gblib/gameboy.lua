@@ -358,6 +358,18 @@ end
 local string_byte = string.byte
 local string_sub = string.sub
 
+-- Pulls a rom from the global table
+-- We have to do this because there are memory limits to all tables that
+-- aren't the global one
+local function GB_GET_ROM(string)
+	for i,j in pairs(GB_ROMS) do
+		if j['name'] == string then
+	 return j;
+		end
+	end
+	return nil;
+end
+
 function mt:LoadRom(romname)
 
 	self.ROMtable = GB_GET_ROM(romname)

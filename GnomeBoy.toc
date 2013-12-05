@@ -3,12 +3,30 @@
 ## Version: 0.1
 ## Author: Nyctrennis
 ## Notes: You bet.
+
+## Loads all of the basic libraries
+lib\LibStub\Libstub.lua
+lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
+lib\LibDBIcon-1.0\LibDBIcon-1.0.lua
+
+## minimap button
+minimap.lua
+
+## skins
+lib\skinManager.lua
+skins\classic.lua
+
+
+# Initializes our frames and stuff
 base.lua
-lib\core.lua
-lib\gameboy.lua
-lib\gmb_memory.lua
-lib\gmb_opcodes.lua
-lib\gmb_cb_opcodes.lua
-lib\gmb_gpu.lua
+
+## Loads up the gameboy library
+lib\gblib\core.lua
+lib\gblib\gameboy.lua
+lib\gblib\gmb_memory.lua
+lib\gblib\gmb_opcodes.lua
+lib\gblib\gmb_cb_opcodes.lua
+lib\gblib\gmb_gpu.lua
+
+## Loads all of our generated roms into the game
 roms.lua
-post.lua
