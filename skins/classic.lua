@@ -6,7 +6,7 @@ local function _wd() return "Interface\\AddOns\\GnomeBoy\\" end
 
 
 local function generate()
-	local self = CreateFrame("Frame","GnomeBoyFrame",UIParent)
+	local self = CreateFrame("Frame",nil,UIParent)
 
 	local platebtn = CreateFrame("Button",nil,self,"UIPanelButtonTemplate")
 	platebtn:SetSize(50,50)
@@ -132,35 +132,6 @@ local function generate()
 			self.Options.Icon:SetPoint("CENTER",self.Options,"CENTER")
 			self.Options.Icon:Show()
 		end
-
-
--- 		buttons.on = makeRatioButton(395,0,1334,371)
--- 		buttons.on:EnableMouse(true)
--- 		buttons.on:RegisterForClicks("LeftButtonUp")
--- 		buttons.on:SetScript("OnClick",function(btn,button,down)
--- 			if (self.SCREENGEN == true) and(self.Emulator.RUNNING ~= nil) then
--- 				self.Emulator.RUNNING = not self.Emulator.RUNNING;
--- 			end
--- 			if (self.SCREENGEN == false) then
-
-				
--- 			end
--- 		end)
--- 		buttons.on:SetScript( "OnEnter", function(frame) 
--- 			GameTooltip:SetOwner( frame, "ANCHOR_CURSOR" )
--- 			local text = "|cFF696969ON/OFF:|r \n";
--- 			if (self.SCREENGEN == false) then
--- 				text = text .. [[|cFFFF0000WARNING:|r Will lag (or freeze) your game pretty badly for a moment.
--- It generates the screen for the emulator, and unsurprisingly creating
--- just over 23k pixels takes a lot of power. You will not be able to move
--- the Gnome Boy after you have generated the screen, so choose its position
--- taking that into account.]]
--- 			else
--- 				text = text .. "(Un)pauses execution of the emulator so your FPS goes back up.";
--- 			end
--- 			GameTooltip:SetText(text);
--- 		end )
--- 		buttons.on:SetScript( "OnLeave", GameTooltip_Hide )
 	end
 	function self:SetChangeable(bool)
 		if bool == true then
