@@ -36,6 +36,71 @@ function addon:GetActiveSkin()
 	return addon.skin.activeName;
 end
 
+local function setOptionsChangeable(frame)
+	local ops = frame.Options;
+	ops:EnableMouse(true);
+	ops:RegisterForClicks("LeftButtonUp")
+	ops:SetScript("OnClick",function(btn,button,down)
+		if not ops.dropdown then
+			ops.dropdown = CreateFrame("Frame",nil);
+			ops.dropdown.displayMode = "MENU";
+		end
+		local dropdown = ops.dropdown;
+		UIDropDownMenu_Initialize(dropdown, function(self, level, menuList)
+			if (level == 1) then
+				local info = UIDropDownMenu_CreateInfo();
+				info.text = "Change Skin"
+				info.menuList = "Change Skin";
+				info.hasArrow = true;
+				info.notCheckable = true;
+				UIDropDownMenu_AddButton(info,level)
+
+				info.text = "Lock Skin and Load Emulator";
+				info.hasArrow = false;
+				info.func = function()
+					addon:LoadEmulator();
+				end
+				info.tooltipTitle = "Loads the Emulator"
+				info.tooltipText = [[|cFFFF0000WARNING:|r Will lag (or freeze) your game pretty badly for a moment.
+It generates the screen for the emulator, and unsurprisingly creating
+just over 23k pixels takes a lot of power. You will not be able to move
+the Gnome Boy after you have generated the screen, so choose its position
+taking that into account.]]
+				info.tooltipOnButton = true;
+				UIDropDownMenu_AddButton(info,level)
+			elseif (level == 2) then
+				if UIDROPDOWNMENU_MENU_VALUE == "Change Skin" then
+					local info = UIDropDownMenu_CreateInfo();
+					info.notCheckable = true;
+					for i,j in pairs(skins) do
+						if i == addon:GetActiveSkin() then
+							info.text = "|cffa9a9a9"..i.."|r";
+							info.func = nil;
+							info.disabled = true;
+						else
+							info.text = i;
+							info.func = function()
+								addon:SetActiveSkin(i);
+							end
+							info.disabled = false;
+						end
+						UIDropDownMenu_AddButton(info,level);
+					end
+					
+				end
+			end
+		end);
+		ToggleDropDownMenu(1, nil, dropdown, ops, 0, 0)
+	end)
+end
+
+local function setOptionsNormal(frame)
+	local ops = frame.Options;
+	ops:EnableMouse(true);
+	ops:RegisterForClicks("LeftButtonUp")
+	ops:SetScript("OnClick",nil)
+end
+
 function addon:SetActiveSkin(name)
 	if not addon.changeable then return end
 	if not skins[name] then return end
@@ -51,10 +116,13 @@ function addon:SetActiveSkin(name)
 	end
 
 	skins[name].Frame:SetChangeable(true);
+	setOptionsChangeable(skins[name].Frame);
 	skins[name].Frame:Show();
 
 	addon.skin.activeName = name;
 end
+
+
 
 local px,py = 160,144;
 local pixel;
@@ -77,6 +145,7 @@ function addon:LockSkin()
 	addon.changeable = false;
 
 	currentSkin.Frame:SetChangeable(false);
+	setOptionsNormal(currentSkin.Frame);
 
 	screen.pixels = {}
 	for i = 1, py do
@@ -112,10 +181,13 @@ function addon:LockSkin()
 	addon.Emulator.drawfunc = drawrect;
 end
 
+
 function addon:ShowEmulator()
+	addon.Running = true;
 	skins[addon:GetActiveSkin()].Frame:Show();
 end
 
 function addon:HideEmulator()
+	addon.Running = false;
 	skins[addon:GetActiveSkin()].Frame:Hide();
 end

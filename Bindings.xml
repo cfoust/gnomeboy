@@ -1,58 +1,58 @@
 <Bindings>
  <Binding name="GB_START" runOnUp="true" header="GNOMEBOYADVANCE">
   if keystate == "down" then
-   UseControl("Start",true)
+   GB_UseControl("Start",true)
   else
-   UseControl("Start",false)
+   GB_UseControl("Start",false)
   end
  </Binding>
  <Binding name="GB_SELECT" runOnUp="true">
   if keystate == "down" then
-   UseControl("Select",true)
+   GB_UseControl("Select",true)
   else
-   UseControl("Select",false)
+   GB_UseControl("Select",false)
   end
  </Binding>
  <Binding name="GB_A" runOnUp="true">
   if keystate == "down" then
-   UseControl("A",true)
+   GB_UseControl("A",true)
   else
-   UseControl("A",false)
+   GB_UseControl("A",false)
   end
  </Binding>
  <Binding name="GB_B" runOnUp="true">
   if keystate == "down" then
-   UseControl("B",true)
+   GB_UseControl("B",true)
   else
-   UseControl("B",false)
+   GB_UseControl("B",false)
   end
  </Binding>
  <Binding name="GB_UP" runOnUp="true">
   if keystate == "down" then
-   UseControl("Up",true)
+   GB_UseControl("Up",true)
   else
-   UseControl("Up",false)
+   GB_UseControl("Up",false)
   end
  </Binding>
  <Binding name="GB_DOWN" runOnUp="true">
   if keystate == "down" then
-   UseControl("Down",true)
+   GB_UseControl("Down",true)
   else
-   UseControl("Down",false)
+   GB_UseControl("Down",false)
   end
  </Binding>
  <Binding name="GB_LEFT" runOnUp="true">
   if keystate == "down" then
-   UseControl("Left",true)
+   GB_UseControl("Left",true)
   else
-   UseControl("Left",false)
+   GB_UseControl("Left",false)
   end
  </Binding>
  <Binding name="GB_RIGHT" runOnUp="true">
   if keystate == "down" then
-   UseControl("Right",true)
+   GB_UseControl("Right",true)
   else
-   UseControl("Right",false)
+   GB_UseControl("Right",false)
   end
  </Binding>
 </Bindings>
