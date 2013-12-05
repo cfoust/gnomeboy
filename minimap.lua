@@ -7,15 +7,21 @@ local function print(...) _G.print("|cff708090GnomeBoy:|r", ...) end
 
 local plugin = ldb:NewDataObject(addonName, {
 	type = "data source",
-	icon = "Interface\\AddOns\\BugSack\\Media\\icon",
+	icon = "Interface\\Icons\\INV_Misc_Head_ClockworkGnome_01",
 })
 
+local hidden = true;
 function plugin.OnClick(self, button)
-	print(self,button)
+	hidden = not hidden;
+	if (hidden == true) then
+		addon:HideEmulator()
+	else
+		addon:ShowEmulator()
+	end
 end
 
 function plugin.OnTooltipShow(tt)
-	tt:AddLine("This is a test")
+	tt:AddLine("|cff708090GnomeBoy:|r Click to show/hide the emulator.")
 end
 
 local f = CreateFrame("Frame")

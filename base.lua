@@ -29,7 +29,8 @@ do
 		time = 1000/frameLimit;
 	end
 	function addon:StartCycling()
-		self:SetScript("OnUpdate",function(frame,elapsed)
+		local f = CreateFrame("Frame",nil,UIParent)
+		f:SetScript("OnUpdate",function(frame,elapsed)
 			if (addon.Running == true) then
 				sinceLast = sinceLast + elapsed*1000;
 				if (sinceLast > time) then
@@ -55,6 +56,12 @@ function addon:Initialize()
 	local gem = GBAgem
 	addon.Emulator = gem.New();
 	addon.changeable = true;
+end
+
+function addon:LoadEmulator()
+	addon:LockSkin();
+	addon:LoadRom("Tetris.gb");
+	addon:StartCycling();
 end
 
 
@@ -84,16 +91,14 @@ function eventFrame:PLAYER_LOGIN()
 	self:UnregisterEvent("PLAYER_LOGIN")
 
 	addon:SetActiveSkin(addon:GetFirstSkin());
-	
-	addon:ShowEmulator();
+	addon:HideEmulator();
 
 	self.PLAYER_LOGIN = nil
 end
 
 ------------------------------------------------------
 function StartGameBoy()
-	local self = GenerateGB()
-	GB_GAMEBOY_INSTANCE = self;
+	addon:LoadEmulator();
 end
 
 BINDING_HEADER_GNOMEBOYADVANCE = "Gnome Boy Advance"

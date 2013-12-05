@@ -70,12 +70,13 @@ local darkColor = {
 };
 
 function addon:LockSkin()
-	if not skins[addon:GetActiveSkin()].Frame.Screen then return end
-	local screen = skins[addon:GetActiveSkin()].Frame.Screen;
+	local currentSkin = skins[addon:GetActiveSkin()];
+	if not currentSkin.Frame.Screen then return end
+	local screen = currentSkin.Frame.Screen;
 
 	addon.changeable = false;
 
-	skins[addon:GetActiveSkin()].Frame:SetChangeable(false);
+	currentSkin.Frame:SetChangeable(false);
 
 	screen.pixels = {}
 	for i = 1, py do
@@ -83,7 +84,7 @@ function addon:LockSkin()
 		for j = 1, px do
 			screen.pixels[i][j] = screen:CreateTexture("Texture",nil,screen);
 			pixel = screen.pixels[i][j]
-			pixel:SetTexture(screenColor.r/255,screenColor.g/255,screenColor.b/255,1)
+			pixel:SetTexture(baseColor.r/255,baseColor.g/255,baseColor.b/255,1)
 			pixel:SetSize((screen:GetWidth()/px),(screen:GetHeight()/py))
 			pixel:SetPoint("TOPLEFT",screen,"TOPLEFT",(screen:GetWidth()/px)*(j-1),-1*(screen:GetHeight()/py)*(i-1));
 		end
