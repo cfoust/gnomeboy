@@ -8,12 +8,28 @@ local function _wd() return "Interface\\AddOns\\GnomeBoy\\" end
 local function generate()
 	local self = CreateFrame("Frame",nil,UIParent)
 
-	local platebtn = CreateFrame("Button",nil,self,"UIPanelButtonTemplate")
-	platebtn:SetSize(50,50)
-	platebtn:SetPoint("TOPRIGHT",self,"TOPLEFT")
+	local biggerButton = CreateFrame("Button",nil,self)
+	biggerButton:SetSize(50,50)
+	biggerButton:SetPoint("TOPRIGHT",self,"TOPLEFT");
+
+	local smallerButton = CreateFrame("Button",nil,self)
+	smallerButton:SetSize(50,50)
+	smallerButton:SetPoint("TOPRIGHT",biggerButton,"BOTTOMRIGHT");
 	do
+		biggerButton:SetNormalTexture("Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Up.tga");
+		biggerButton:SetPushedTexture("Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Down.tga")
+		biggerButton:SetDisabledTexture("Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Disabled.tga")
+		biggerButton:SetHighlightTexture("Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Highlight.tga")
+		-- 19/32x19/32
+
 		
+		smallerButton:SetNormalTexture("Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Up.tga");
+		smallerButton:SetPushedTexture("Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Down.tga")
+		smallerButton:SetDisabledTexture("Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Disabled.tga")
+		smallerButton:SetHighlightTexture("Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Highlight.tga")
 	end
+	
+	
 
 	self:SetFrameLevel(5)
 
@@ -146,19 +162,14 @@ local function generate()
 			  self:StopMovingOrSizing() 
 			end)
 
-			platebtn:SetScript( "OnEnter", function(frame) 
-				GameTooltip:SetOwner( frame, "ANCHOR_CURSOR" )
-				local text = "|cFF696969Right|r click to make Gnome Boy smaller. \n|cFF696969Left|r click to make Gnome Boy bigger. ";
-				GameTooltip:SetText(text);
-			end )
-			platebtn:SetScript( "OnLeave", GameTooltip_Hide )
-			platebtn:RegisterForClicks("LeftButtonUp","RightButtonUp")
-			platebtn:SetScript("OnClick",function(btn,button,down)
-				if (button == "LeftButton") then
-					self:SetSizeDelta(30);
-				else
-					self:SetSizeDelta(-30);
-				end
+			biggerButton:RegisterForClicks("LeftButtonUp")
+			biggerButton:SetScript("OnClick",function(btn,button,down)
+				self:SetSizeDelta(30);
+			end)
+
+			smallerButton:RegisterForClicks("LeftButtonUp")
+			smallerButton:SetScript("OnClick",function(btn,button,down)
+				self:SetSizeDelta(-30);
 			end)
 
 			self:SetScript( "OnEnter", function(frame) 

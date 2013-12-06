@@ -80,6 +80,7 @@ taking that into account.]]
 						else
 							info.text = i;
 							info.func = function()
+								ToggleDropDownMenu(1, nil, dropdown, ops, 0, 0)
 								addon:SetActiveSkin(i);
 							end
 							info.disabled = false;

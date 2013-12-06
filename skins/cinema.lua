@@ -8,7 +8,7 @@ local function generate()
 	local self = CreateFrame("Frame",nil,UIParent)
 
 	
-	self:SetFrameLevel(5);
+	self:SetFrameLevel(1);
 	
 	do
 		self.BG = CreateFrame("Frame",nil,self);
