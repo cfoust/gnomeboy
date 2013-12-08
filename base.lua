@@ -15,8 +15,13 @@ _G[addonName] = addon
 
 function addon:LoadRom(romname)
 	addon.Running = false;
+	if addon.currentRom then
+		addon:SaveRAM();
+	end
 	addon.Emulator:Restart()
+	addon:LoadRAM(romname);
 	addon.Emulator:LoadRom(romname);
+	addon.currentRom = romname;
 	addon.Running = true;
 end
 
@@ -60,9 +65,56 @@ end
 
 function addon:LoadEmulator()
 	addon:LockSkin();
-	addon:LoadRom("Tetris.gb");
 	addon:StartCycling();
 end
+
+
+if not GB_RAM_STORE then GB_RAM_STORE = {} end
+
+do
+	local function shallowcopy(orig)
+	    local orig_type = type(orig)
+	    local copy
+	    if orig_type == 'table' then
+	        copy = {}
+	        for orig_key, orig_value in pairs(orig) do
+	            copy[orig_key] = orig_value
+	        end
+	    else -- number, string, boolean, etc
+	        copy = orig
+	    end
+	    return copy
+	end
+
+	function addon:SaveRAM()
+		print("Saving RAM")
+		local name = addon.currentRom;
+		if not GB_RAM_STORE[name] then 
+			print("Created table",name)
+			GB_RAM_STORE[name] = {} 
+		end
+		local RAM = addon.Emulator.RAM
+		for k,v in pairs(RAM) do
+			if (v ~= 0) then
+				GB_RAM_STORE[name][k] = v;
+			end
+		end
+	end
+
+	function addon:LoadRAM(name)
+		if GB_RAM_STORE[name] then
+			local RAMStore = GB_RAM_STORE[name]
+			for k,v in pairs(RAMStore) do
+				self.Emulator.RAM[k] = v;
+			end
+		end
+		
+	end
+end
+
+
+
+
 
 
 function GB_UseControl(string,bool)
@@ -76,13 +128,14 @@ local eventFrame = CreateFrame("Frame")
 eventFrame:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
+eventFrame:RegisterEvent("PLAYER_LOGOUT")
 
 function eventFrame:ADDON_LOADED(loadedAddon)
 	if loadedAddon ~= addonName then return end
 	self:UnregisterEvent("ADDON_LOADED")
 
 	addon:Initialize();
-	print("Loaded.")
+	print(addonName,"loaded")
 
 	self.ADDON_LOADED = nil
 end
@@ -96,9 +149,19 @@ function eventFrame:PLAYER_LOGIN()
 	self.PLAYER_LOGIN = nil
 end
 
-------------------------------------------------------
-function StartGameBoy()
-	addon:LoadEmulator();
+function eventFrame:PLAYER_LOGOUT()
+	self:UnregisterEvent("PLAYER_LOGOUT")
+
+	addon:SaveRAM();
+
+	self.PLAYER_LOGOUT = nil
 end
 
-BINDING_HEADER_GNOMEBOYADVANCE = "Gnome Boy Advance"
+------------------------------------------------------
+
+
+function RAMTEST()
+	addon:SaveRAM();
+end
+
+BINDING_HEADER_GNOMEBOYADVANCE = "Gnome Boy"

@@ -222,6 +222,7 @@ function addon:LockSkin()
 	end
 	addon.Emulator.colorfunc = setdrawcolor;
 	addon.Emulator.drawfunc = drawrect;
+	addon.Running = false;
 end
 
 

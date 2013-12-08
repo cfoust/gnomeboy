@@ -3,6 +3,7 @@
 ## Version: 0.5
 ## Author: Nyctrennis
 ## Notes: You bet.
+## SavedVariables: GB_RAM_STORE
 
 ## Loads all of the basic libraries
 lib\LibStub\Libstub.lua

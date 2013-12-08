@@ -16,22 +16,11 @@ function mt:Restart()
 
 	-- Memory
 	self.Memory = {}	-- Main Memory RAM
+	self.RAM = {}		-- Used for external Cart RAM
 	self.ROM = {} 		-- Used for external Cart ROM, each bank is offset by 0x4000
 	self.ROM.mt = {}
 	setmetatable(self.ROM,self.ROM.mt)
 
-	self.ROM.mt.__index = function (table,key)
-		local locval = (key % chunkSize)+1;
-		local plate = math.ceil(key/chunkSize);
-		return self.ROMPlates[plate][locval];
-	end
-
-
-	self.RUNNING = true;
-
-	self.RAM = {}		-- Used for external Cart RAM
-
-	-- self:LoadRom()
 	for i = 0, 0x1FFFF do
 		self.Memory[i] = 0
 		self.RAM[i] = 0
@@ -401,4 +390,9 @@ function mt:LoadRom(romname)
 		end
 	end
 	GB_ROM_PLATES = maxPlate
+	self.ROM.mt.__index = function (table,key)
+		local locval = (key % chunkSize)+1;
+		local plate = math.ceil(key/chunkSize);
+		return self.ROMPlates[plate][locval];
+	end
 end
