@@ -99,7 +99,49 @@ local function setOptionsNormal(frame)
 	local ops = frame.Options;
 	ops:EnableMouse(true);
 	ops:RegisterForClicks("LeftButtonUp")
-	ops:SetScript("OnClick",nil)
+	ops:SetScript("OnClick",function(btn,button,down)
+		if not ops.dropdown then
+			ops.dropdown = CreateFrame("Frame",nil);
+			ops.dropdown.displayMode = "MENU";
+		end
+		local dropdown = ops.dropdown;
+		UIDropDownMenu_Initialize(dropdown, function(self, level, menuList)
+			if (level == 1) then
+				local info = UIDropDownMenu_CreateInfo();
+				info.text = "Load ROM"
+				info.menuList = "Load ROM";
+				info.hasArrow = true;
+				info.notCheckable = true;
+				UIDropDownMenu_AddButton(info,level)
+
+				if (addon.Running == true) then
+					info.text = "Freeze the Emulator";
+				else
+					info.text = "Unfreeze the Emulator";
+				end
+				info.hasArrow = false;
+				info.func = function()
+					addon.Running = not addon.Running;
+				end
+				UIDropDownMenu_AddButton(info,level)
+			elseif (level == 2) then
+				if UIDROPDOWNMENU_MENU_VALUE == "Load ROM" then
+					local info = UIDropDownMenu_CreateInfo();
+					info.notCheckable = true;
+					for i,j in pairs(GB_ROMS) do
+						info.text = j['name'];
+						info.func = function()
+							addon:LoadRom(j['name']);
+						end
+						info.disabled = false;
+						UIDropDownMenu_AddButton(info,level);
+					end
+					
+				end
+			end
+		end);
+		ToggleDropDownMenu(1, nil, dropdown, ops, 0, 0)
+	end)
 end
 
 function addon:SetActiveSkin(name)
