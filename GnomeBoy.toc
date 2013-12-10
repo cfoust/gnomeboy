@@ -22,7 +22,6 @@ skins\cinema.lua
 # Initializes our frames and stuff
 base.lua
 
-lib\bitSpeed.lua
 ## Loads up the gameboy library
 lib\gblib\core.lua
 lib\gblib\gameboy.lua
