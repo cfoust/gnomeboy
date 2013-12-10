@@ -20,23 +20,8 @@ local function generate()
 		t:SetAllPoints(bg);
 	end
 
-	-- do
-	-- 	self.Screen = CreateFrame("Frame",nil,self)
-	-- 	local screen = self.Screen;
-	-- 	-- screen:SetFrameLevel(8)
-	-- 	-- screen:SetFrameStrata("FULLSCREEN");
-	-- 	screen:SetSize(160*2,144*2);
-	-- 	screen:SetPoint("CENTER");
-
-	-- 	local t = screen:CreateTexture(nil,"OVERLAY",nil,5);
-	-- 	t:SetTexture(169/255,169/255,169/255,1);
-	-- 	t:SetAllPoints(screen);
-
-	-- 	print(screen:IsVisible())
-	-- end
-
 	self.Options = CreateFrame("Button",nil,self);
-	self.Options:SetSize(25,25);
+	self.Options:SetSize(80,80);
 	self.Options:SetPoint("RIGHT",UIParent,"RIGHT")
 	self.Options:SetNormalTexture("Interface\\Buttons\\UI-SquareButton-Up.tga")
 	self.Options:SetPushedTexture("Interface\\Buttons\\UI-SquareButton-Down.tga")
@@ -53,14 +38,34 @@ local function generate()
 
 	self.Screen = CreateFrame("Frame",nil,self)
 	local screen = self.Screen;
-	-- screen:SetFrameLevel(8)
-	-- screen:SetFrameStrata("FULLSCREEN");
 	screen:SetSize(160*4,144*4);
 	screen:SetPoint("CENTER",UIParent,"CENTER");
 
+	local baseColor = {
+		["r"] = 148,
+		["g"] = 189,
+		["b"] = 32
+	};
+	local darkColor = {
+		["r"] = 43,
+		["g"] = 54,
+		["b"] = 10
+	};
+
 	local t = screen:CreateTexture(nil,"OVERLAY",nil,5);
-	t:SetTexture(169/255,169/255,169/255,1);
+	t:SetTexture(baseColor.r/255,baseColor.g/255,baseColor.b/255,1);
 	t:SetAllPoints(screen);
+
+	self.screenText = screen:CreateFontString(nil,"OVERLAY",2)
+	local text = self.screenText;
+	text:SetTextColor(darkColor.r/255,darkColor.g/255,darkColor.b/255,1);
+	text:SetJustifyH("CENTER");
+	text:SetJustifyV("CENTER");
+	local textHeight = .05*self.Screen:GetHeight();
+	text:SetFont(_wd().."fonts\\pretendo.ttf",textHeight);
+	text:SetPoint("CENTER",self.Screen,"CENTER");
+	for i=1,textHeight do text:SetTextHeight(i); end
+	text:SetText("Screen")
 
 
 
@@ -68,8 +73,10 @@ local function generate()
 	function self:SetChangeable(bool)
 		if (bool == true) then
 			t:Show();
+			text:Show();
 		else
 			t:Hide();
+			text:Hide();
 		end
 	end
 	return self;
