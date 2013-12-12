@@ -390,9 +390,10 @@ function mt:LoadRom(romname)
 		end
 	end
 	GB_ROM_PLATES = maxPlate
+	local ceil = math.ceil
 	self.ROM.mt.__index = function (table,key)
 		local locval = (key % chunkSize)+1;
-		local plate = math.ceil(key/chunkSize);
+		local plate = ceil(key/chunkSize);
 		return self.ROMPlates[plate][locval];
 	end
 end

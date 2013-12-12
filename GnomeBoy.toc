@@ -17,6 +17,7 @@ minimap.lua
 lib\skinManager.lua
 skins\classic.lua
 skins\cinema.lua
+skins\screen.lua
 
 
 # Initializes our frames and stuff

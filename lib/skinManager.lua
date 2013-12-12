@@ -131,6 +131,7 @@ local function setOptionsNormal(frame)
 					for i,j in pairs(GB_ROMS) do
 						info.text = j['name'];
 						info.func = function()
+							ToggleDropDownMenu(1, nil, dropdown, ops, 0, 0)
 							addon:LoadRom(j['name']);
 						end
 						info.disabled = false;
@@ -225,13 +226,20 @@ function addon:LockSkin()
 	addon.Running = false;
 end
 
+local hidden = true;
+
+function addon:Visible()
+	return hidden;
+end
 
 function addon:ShowEmulator()
 	addon.Running = true;
+	hidden = false;
 	skins[addon:GetActiveSkin()].Frame:Show();
 end
 
 function addon:HideEmulator()
 	addon.Running = false;
+	hidden = true;
 	skins[addon:GetActiveSkin()].Frame:Hide();
 end

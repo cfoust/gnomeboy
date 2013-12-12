@@ -87,16 +87,16 @@ do
 	end
 
 	function addon:SaveRAM()
-		print("Saving RAM")
 		local name = addon.currentRom;
-		if not GB_RAM_STORE[name] then 
-			print("Created table",name)
-			GB_RAM_STORE[name] = {} 
-		end
-		local RAM = addon.Emulator.RAM
-		for k,v in pairs(RAM) do
-			if (v ~= 0) then
-				GB_RAM_STORE[name][k] = v;
+		if name then
+			if not GB_RAM_STORE[name] then 
+				GB_RAM_STORE[name] = {} 
+			end
+			local RAM = addon.Emulator.RAM
+			for k,v in pairs(RAM) do
+				if (v ~= 0) then
+					GB_RAM_STORE[name][k] = v;
+				end
 			end
 		end
 	end
@@ -129,13 +129,14 @@ eventFrame:SetScript("OnEvent", function(self, event, ...) self[event](self, ...
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_LOGOUT")
+eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 function eventFrame:ADDON_LOADED(loadedAddon)
 	if loadedAddon ~= addonName then return end
 	self:UnregisterEvent("ADDON_LOADED")
 
 	addon:Initialize();
-	print(addonName,"loaded")
 
 	self.ADDON_LOADED = nil
 end
@@ -157,11 +158,32 @@ function eventFrame:PLAYER_LOGOUT()
 	self.PLAYER_LOGOUT = nil
 end
 
+local combatSuspend = false;
+
+function eventFrame:PLAYER_REGEN_DISABLED()
+	if addon:Visible() then
+		combatSuspend = true;
+		addon:HideEmulator();
+	end
+end
+
+function eventFrame:PLAYER_REGEN_ENABLED()
+	if combatSuspend == true then
+		addon:ShowEmulator();
+		combatSuspend = false;
+	end
+end
+
 ------------------------------------------------------
 
 
-function RAMTEST()
-	addon:SaveRAM();
-end
-
+--Binding globals
 BINDING_HEADER_GNOMEBOYADVANCE = "Gnome Boy"
+BINDING_NAME_GB_START = "Start"
+BINDING_NAME_GB_SELECT = "Select"
+BINDING_NAME_GB_A = "A"
+BINDING_NAME_GB_B = "B"
+BINDING_NAME_GB_UP = "Up"
+BINDING_NAME_GB_DOWN = "Down" 
+BINDING_NAME_GB_LEFT = "Left"
+BINDING_NAME_GB_RIGHT = "Right"
