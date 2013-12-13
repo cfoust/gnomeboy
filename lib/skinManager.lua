@@ -65,7 +65,7 @@ local function setOptionsChangeable(frame)
 It generates the screen for the emulator, and unsurprisingly creating
 just over 23k pixels takes a lot of power. You will not be able to move
 the Gnome Boy after you have generated the screen, so choose its position
-taking that into account.]]
+taking that into account. You will still be able to show/hide it.]]
 				info.tooltipOnButton = true;
 				UIDropDownMenu_AddButton(info,level)
 			elseif (level == 2) then

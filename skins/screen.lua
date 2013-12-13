@@ -157,8 +157,12 @@ local function generate()
 			hardOps:Show();
 			
 
-			self:SetScript( "OnEnter",nil)
-			self:SetScript( "OnLeave", nil)
+			self:SetScript( "OnEnter", function(frame) 
+				GameTooltip:SetOwner( frame, "ANCHOR_CURSOR" )
+				local text = "Click for emulator options and to load ROMs.";
+				GameTooltip:SetText(text);
+			end )
+			self:SetScript( "OnLeave", GameTooltip_Hide )
 		end
 	end
 	return self;

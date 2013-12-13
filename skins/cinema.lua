@@ -73,10 +73,13 @@ local function generate()
 
 	self:SetPoint("CENTER",UIParent,"CENTER")
 	function self:SetChangeable(bool)
+		ChatFrame1:SetFrameLevel(2)
+		ChatFrame1:ScrollToBottom();
 		if (bool == true) then
 			t:Show();
 			text:Show();
 		else
+
 			t:Hide();
 			text:Hide();
 		end
