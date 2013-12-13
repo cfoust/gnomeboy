@@ -1,3 +1,5 @@
 project.sublime-project
 project.sublime-workspace
+roms/*.gb
+roms/*.gbc
 roms.lua
