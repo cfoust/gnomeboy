@@ -7,7 +7,7 @@ roms = open("roms.lua", 'wb')
 roms.write("GB_ROMS = {\n")
 
 for filename in os.listdir("roms/"):
-	if filename[-3:] == ".gb":
+	if filename[-3:] == ".gb" or filename[-4:] == ".gbc":
 		roms.write("\t{\n");
 		romfile = open("roms/" + filename, 'rb')
 		bytes = ""
