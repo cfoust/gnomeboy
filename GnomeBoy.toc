@@ -1,6 +1,6 @@
 ﻿## Interface: 50400
 ## Title: Gnome Boy
-## Version: 0.5
+## Version: 0.8
 ## Author: Nyctrennis
 ## Notes: You bet.
 ## SavedVariables: GB_RAM_STORE
