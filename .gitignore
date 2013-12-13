@@ -1,5 +1,5 @@
 project.sublime-project
 project.sublime-workspace
-roms/*.gb
-roms/*.gbc
+roms/**
+!roms/.gitignore
 roms.lua
