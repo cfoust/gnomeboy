@@ -1,3 +1,15 @@
+#NOTE: This was broken by the 7.0 patch.
+The method of drawing the screen relied upon creating an array of tiny frames
+that could be changed to display any RGB color. Patch 7.0 changed the API
+from SetTexture to SetTextureColor. The latter, as it turns out, has an upper
+limit of (2^14) frames, after which the WoW client crashes. The Game Boy
+had a 160x144 screen with 23,040 pixels, so this addon now crashes the game.
+
+There are no other methods of drawing in the API due to Blizzard's anti-addon
+zealotry, so here we are. The code still works, but drawing doesn't.
+
+----
+
 Gnome Boy
 ===============
 
