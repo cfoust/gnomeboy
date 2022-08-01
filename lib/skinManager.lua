@@ -87,7 +87,7 @@ taking that into account. You will still be able to show/hide it.]]
 						end
 						UIDropDownMenu_AddButton(info,level);
 					end
-					
+
 				end
 			end
 		end);
@@ -137,7 +137,7 @@ local function setOptionsNormal(frame)
 						info.disabled = false;
 						UIDropDownMenu_AddButton(info,level);
 					end
-					
+
 				end
 			end
 		end);
@@ -185,6 +185,18 @@ function addon:LockSkin()
 	local currentSkin = skins[addon:GetActiveSkin()];
 	if not currentSkin.Frame.Screen then return end
 	local screen = currentSkin.Frame.Screen;
+	screen:SetFlattensRenderLayers(true)
+	screen:SetFrameBuffer(true)
+
+	-- Divide the screen into rows to bypass the 2^14 children limit per frame
+	screen.rows = {}
+	for i = 1, py do
+		local row = CreateFrame("Frame", nil, screen)
+		row:SetFlattensRenderLayers(true)
+		row:SetFrameBuffer(true)
+		row:SetAllPoints()
+		table.insert(screen.rows, row)
+	end
 
 	addon.changeable = false;
 
@@ -195,9 +207,9 @@ function addon:LockSkin()
 	for i = 1, py do
 		screen.pixels[i] = {}
 		for j = 1, px do
-			screen.pixels[i][j] = screen:CreateTexture("Texture",nil,screen);
+			screen.pixels[i][j] = screen.rows[i]:CreateTexture("Texture",nil,screen.rows[i]);
 			pixel = screen.pixels[i][j]
-			pixel:SetTexture(baseColor.r/255,baseColor.g/255,baseColor.b/255,1)
+			pixel:SetColorTexture(baseColor.r/255,baseColor.g/255,baseColor.b/255,1)
 			pixel:SetSize((screen:GetWidth()/px),(screen:GetHeight()/py))
 			pixel:SetPoint("TOPLEFT",screen,"TOPLEFT",(screen:GetWidth()/px)*(j-1),-1*(screen:GetHeight()/py)*(i-1));
 		end
@@ -217,8 +229,8 @@ function addon:LockSkin()
 		ca = 1;
 	end
 	local function drawrect(x,y,width,height)
-		if (0 <= x) and (x <= px) and (0 <= y) and (y <= py) then
-	 		screen.pixels[y+1][x+1]:SetTexture(cr,cg,cb,ca);
+		if (0 <= x) and (x < px) and (0 <= y) and (y < py) then
+			screen.pixels[y+1][x+1]:SetColorTexture(cr,cg,cb,ca);
 		end
 	end
 	addon.Emulator.colorfunc = setdrawcolor;
