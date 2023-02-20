@@ -75,7 +75,7 @@ local function generate()
 
 	function self:SetSizeDelta(delta)
 	  if ((self:GetWidth()+delta) > 220) and ((self:GetWidth()+delta) < 1000) then
-		self:Resolute(self:GetWidth()+delta) 
+		self:Resolute(self:GetWidth()+delta)
 	  end
 	end
 
@@ -91,7 +91,7 @@ local function generate()
 	};
 
 	local t = screen:CreateTexture(nil,"OVERLAY",nil,5);
-	t:SetTexture(baseColor.r/255,baseColor.g/255,baseColor.b/255,1);
+	t:SetColorTexture(baseColor.r/255,baseColor.g/255,baseColor.b/255,1);
 	t:SetAllPoints(screen);
 
 	self.screenText = screen:CreateFontString(nil,"OVERLAY",2)
@@ -114,10 +114,10 @@ local function generate()
 			self:SetMovable(true)
 			self:SetClampedToScreen(true)
 			self:SetScript("OnDragStart",function(self)
-			  self:StartMoving() 
+			  self:StartMoving()
 			  end)
 			self:SetScript("OnDragStop",function(self)
-			  self:StopMovingOrSizing() 
+			  self:StopMovingOrSizing()
 			end)
 
 			biggerButton:RegisterForClicks("LeftButtonUp")
@@ -132,9 +132,9 @@ local function generate()
 
 			floatOps:Show();
 			hardOps:Hide();
-			
 
-			self:SetScript( "OnEnter", function(frame) 
+
+			self:SetScript( "OnEnter", function(frame)
 				GameTooltip:SetOwner( frame, "ANCHOR_CURSOR" )
 				local text = "Drag to move.";
 				GameTooltip:SetText(text);
@@ -155,9 +155,9 @@ local function generate()
 
 			floatOps:Hide();
 			hardOps:Show();
-			
 
-			self:SetScript( "OnEnter", function(frame) 
+
+			self:SetScript( "OnEnter", function(frame)
 				GameTooltip:SetOwner( frame, "ANCHOR_CURSOR" )
 				local text = "Click for emulator options and to load ROMs.";
 				GameTooltip:SetText(text);

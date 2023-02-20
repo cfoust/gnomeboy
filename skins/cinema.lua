@@ -7,20 +7,20 @@ local function _wd() return "Interface\\AddOns\\GnomeBoy\\" end
 local function generate()
 	local self = CreateFrame("Frame",nil,UIParent)
 
-	
+
 	self:SetFrameLevel(1);
-	
+
 	do
 		self.BG = CreateFrame("Frame",nil,self);
 		local bg = self.BG;
 		bg:SetAllPoints(UIParent);
 		bg:SetFrameStrata("BACKGROUND");
 		local t = bg:CreateTexture(nil,"OVERLAY",nil);
-		t:SetTexture(0,0,0,1);
+		t:SetColorTexture(0,0,0,1);
 		t:SetAllPoints(bg);
 	end
 
-	
+
 
 	self.Screen = CreateFrame("Frame",nil,self)
 	local screen = self.Screen;
@@ -55,7 +55,7 @@ local function generate()
 	};
 
 	local t = screen:CreateTexture(nil,"OVERLAY",nil,5);
-	t:SetTexture(baseColor.r/255,baseColor.g/255,baseColor.b/255,1);
+	t:SetColorTexture(baseColor.r/255,baseColor.g/255,baseColor.b/255,1);
 	t:SetAllPoints(screen);
 
 	self.screenText = screen:CreateFontString(nil,"OVERLAY",2)

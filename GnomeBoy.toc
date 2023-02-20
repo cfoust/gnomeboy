@@ -1,4 +1,4 @@
-﻿## Interface: 50400
+﻿## Interface: 90205
 ## Title: Gnome Boy
 ## Version: 0.8
 ## Author: Nyctrennis
@@ -8,6 +8,7 @@
 ## Loads all of the basic libraries
 lib\LibStub\Libstub.lua
 lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
+lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
 lib\LibDBIcon-1.0\LibDBIcon-1.0.lua
 
 ## minimap button
